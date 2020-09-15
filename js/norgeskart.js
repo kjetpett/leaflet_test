@@ -7,4 +7,3 @@ L.esri.featureLayer({
   L.esri.featureLayer({
     url: 'https://trdetestarcgi01.miljodirektoratet.no/arcgis/rest/services/interne_tjenester/kommuner_fylker/MapServer/1'
   }).addTo(map);
-  
