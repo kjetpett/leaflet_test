@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no" />
+    <title>
+        Feature widget in a side panel | Sample | ArcGIS API for JavaScript 4.16
+    </title>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.16/"></script>
+
+    <style>
+        html,
+        body {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+        #viewDiv {
+            float: left;
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 70%;
+        }
+
+        #feature-node {
+            float: left;
+            width: 30%;
+            height: 100%;
+            padding: 1em;
+        }
+    </style>
+
+    <script>
+        require([
+            "esri/Map",
+            "esri/layers/FeatureLayer",
+            "esri/layers/VectorTileLayer",
+            "esri/views/MapView",
+            "esri/widgets/Feature",
+            "esri/Basemap",
+        ], function (Map, FeatureLayer, VectorTileLayer, MapView, Feature, Basemap) {
+            
+            const kommuneFeatureLayer = new FeatureLayer({
+                url: "https://trdetestarcgi01.miljodirektoratet.no/arcgis/rest/services/interne_tjenester/kommuner_fylker/MapServer/0",
+                outFields: ["*"]
+            });
+
+            var basemapNorgeOmriss = new Basemap({
+                baseLayers: [
+                    new VectorTileLayer({
+                        url: "https://tiles.arcgis.com/tiles/ThExf1r1eIhz35uv/arcgis/rest/services/Norge/VectorTileServer",
+                        title: "Norge omriss"
+                    })
+                ],
+                title: "Norge omriss",
+                id: "BasemapNorgeOmriss"
+            });
+
+            const map = new Map({
+                basemap: basemapNorgeOmriss,
+                layers: [kommuneFeatureLayer]
+            });
+
+            const view = new MapView({
+                container: "viewDiv",
+                map: map,
+                extent: {
+                    // autocasts as new Extent()
+                    xmin: -360599,
+                    ymin: 6448508,
+                    xmax: 1115096,
+                    ymax: 8978351,
+                    spatialReference: 25833
+                },
+                // ,zoom: 10
+                popup: {
+                    autoOpenEnabled: false
+                }
+            });
+
+            view.when().then(function () {
+                // Create a default graphic for when the application starts
+                const graphic = {
+                    popupTemplate: {
+                        content: "Mouse over features to show details..."
+                    }
+                };
+
+                // Provide graphic to a new instance of a Feature widget
+                const feature = new Feature({
+                    container: "feature-node",
+                    graphic: graphic,
+                    map: view.map,
+                    spatialReference: view.spatialReference
+                });
+
+                view.whenLayerView(kommuneFeatureLayer).then(function (layerView) {
+                    let highlight;
+                    // listen for the pointer-move event on the View
+                    view.on("pointer-move", function (event) {
+                        // Perform a hitTest on the View
+                        view.hitTest(event).then(function (event) {
+                            // Make sure graphic has a popupTemplate
+                            let results = event.results.filter(function (result) {
+                                return result.graphic.layer.popupTemplate;
+                            });
+                            let result = results[0];
+                            highlight && highlight.remove();
+                            // Update the graphic of the Feature widget
+                            // on pointer-move with the result
+                            if (result) {
+                                feature.graphic = result.graphic;
+                                highlight = layerView.highlight(result.graphic);
+                            } else {
+                                feature.graphic = graphic;
+                            }
+                        });
+                    });
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div id="feature-node" class="esri-widget"></div>
+    <div id="viewDiv"></div>
+</body>
+
+</html>

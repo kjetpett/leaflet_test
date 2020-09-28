@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <title>
+        Intro to FeatureLayer | Sample | ArcGIS API for JavaScript 4.16
+    </title>
+
+    <link rel="stylesheet" href="https://js.arcgis.com/4.16/esri/themes/light/main.css" />
+    <script src="https://js.arcgis.com/4.16/"></script>
+
+    <style>
+        html,
+        body,
+        #viewDiv {
+            padding: 0;
+            margin: 0;
+            height: 100%;
+            width: 100%;
+        }
+
+
+        .esri-view-root {
+            background-color: lightgrey;
+        }
+    </style>
+
+    <script>
+        require([
+            "esri/Map",
+            "esri/views/MapView",
+            "esri/layers/FeatureLayer",
+            "esri/layers/VectorTileLayer",
+            "esri/Basemap",
+            "esri/symbols/SimpleFillSymbol",
+            "esri/symbols/SimpleLineSymbol",
+            "esri/renderers/SimpleRenderer",
+            "esri/Graphic",
+            "dojo/_base/Color",
+            "dojo/on",
+            'dojo/dom',
+            'dojo/dom-style',
+            "dojo/domReady!"
+        ], function (Map, MapView, FeatureLayer, VectorTileLayer, Basemap, SimpleFillSymbol, SimpleLineSymbol, SimpleRenderer, Graphic, Color, on, dom, domStyle) {
+
+            var basemapNorgeOmriss = new Basemap({
+                baseLayers: [
+                    new VectorTileLayer({
+                        url: "https://tiles.arcgis.com/tiles/ThExf1r1eIhz35uv/arcgis/rest/services/Norge/VectorTileServer",
+                        title: "Norge omriss"
+                    })
+                ],
+                title: "Norge omriss",
+                id: "BasemapNorgeOmriss"
+            });
+
+            // var highlightSymbol = new SimpleFillSymbol(
+            //     SimpleFillSymbol.STYLE_SOLID,
+            //     new SimpleLineSymbol(
+            //         SimpleLineSymbol.STYLE_SOLID,
+            //         new Color([255, 0, 0]), 3
+            //     ),
+            //     new Color([125, 125, 125, 0.35])
+            // );
+
+            var featureLayer = new FeatureLayer({
+                url: "https://trdetestarcgi01.miljodirektoratet.no/arcgis/rest/services/interne_tjenester/kommuner_fylker/MapServer/0",
+                outFields: ["*"]
+            });
+
+            var map = new Map({
+                // basemap: basemapNorgeOmriss,
+                layers: [featureLayer]
+            });
+
+            var view = new MapView({
+                container: "viewDiv",
+                map: map,
+                extent: {
+                    // autocasts as new Extent()
+                    xmin: -360599,
+                    ymin: 6448508,
+                    xmax: 1115096,
+                    ymax: 8978351,
+                    spatialReference: 25833
+                }
+            });
+
+            // // highlight features based on a query result
+            // var highlight;
+            // view.whenLayerView(featureLayer).then(function (layerView) {
+            //     var query = featureLayer.createQuery();
+            //     query.where = "kommNr=5001";
+            //     featureLayer.queryFeatures(query).then(function (result) {
+            //         if (highlight) {
+            //             highlight.remove();
+            //         }
+            //         highlight = layerView.highlight(result.features);
+            //     })
+            // });
+
+            // view.on('pointer-move', function (evt) {
+            //     view.hitTest(evt).then(function (r) {
+            //         if (r.results.length > 0 && r.results[0].graphic) {
+            //             domStyle.set('hover', 'display', 'block');
+            //             domStyle.set('hover', 'top', evt.y + 'px');
+            //             domStyle.set('hover', 'left', evt.x + 'px');
+            //             // var feature = r.results[0].graphic;
+            //             // console.log('feature', feature.attributes);
+            //         } else {
+            //             domStyle.set('hover', 'display', 'none');
+            //         }
+            //     });
+            // });
+
+            // //highlight feature on pointer-move
+            // view.on("pointer-move", function (event) {
+            //     view.hitTest(event).then(function (response) {
+            //         highlight && highlight.remove();
+            //         if (response.results.length) {
+            //             var graphic = response.results.filter(function (result) {
+            //                 return result.graphic.layer === featureLayer;
+            //             })[0].graphic;
+            //             view.whenLayerView(graphic.layer).then(function (layerView) {
+            //                 layerView.highlight(graphic);
+            //             });
+            //         }
+            //     });
+            // });
+
+            view.on("pointer-move", function (event) {
+                view.hitTest(event).then(function (response) {
+                    if (response.results.length > 0) {
+                        //console.log(featureLayer.id);
+                        var valgtResultat;
+                        for (i=0; i < response.results.length; i++) {
+                            if (response.results[i].graphic.layer.id == featureLayer.id) {
+                                console.log("match " + i + " " + response.results.length);
+                                valgtResultat = response.results[i];
+                                //geometry = response.results[i].graphic.geometry;
+                            }
+                        }
+                        //response.results[1].graphic.layer.title
+                        //verdi 'Kommuner fylker'
+                        // var firstLayer = response.results[0];
+                        try {
+                            console.log(valgtResultat.graphic.attributes.kommNavn);
+                            geometry = valgtResultat.graphic.geometry;
+
+                            if (geometry.type === "polygon") {
+                                var symbol = {
+                                    type: "simple-fill",  // autocasts as new SimpleFillSymbol()
+                                    color: [51, 51, 204, 0.9],
+                                    style: "solid",
+                                    outline: {  // autocasts as new SimpleLineSymbol()
+                                        color: "white",
+                                        width: 1
+                                    }
+                                };
+                                var graphic = new Graphic(geometry, symbol);
+
+                                view.graphics.removeAll(); // make sure to remmove previous highlighted feature
+                                view.graphics.add(graphic);
+                            }
+                        }
+                        catch (err)
+                        {
+                            console.log("feil");
+                        }
+                        
+                    }
+                });
+            });
+
+            view.ui.add("info", "top-right");
+        });
+    </script>
+</head>
+
+<body>
+    <div id="viewDiv">
+        <div id="info">
+            <span id="name"></span> <br />
+            <span id="category"></span> <br />
+            <span id="wind"></span>
+        </div>
+    </div>
+</body>
+
+</html>

@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8" />
-  <title>Esri Leaflet Quickstart</title>
+  <title>Esri Leaflet Fylker/Kommuner</title>
   <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
 
   <!-- Load Leaflet from CDN -->
@@ -41,7 +41,7 @@
       background: white;
     }
 
-    #query {
+    #layerBar {
       position: absolute;
       top: 10px;
       right: 10px;
@@ -54,12 +54,12 @@
 <body>
   <div id="map"></div>
   <div id="info-pane" class="leaflet-bar"></div>
-  <div id="query" class="leaflet-bar">
-    <input type="radio" id="fylkeLayer" name="layerRadio" value="fylkeLayer" checked="false">
+  <div id="layerBar" class="leaflet-bar">
+    <input type="radio" id="fylkeLayer" name="layerRadio" value="fylkeLayer" checked>
     <label for="fylkeLayer">Fylker</label>
-    <input type="radio" id="kommuneLayer" name="layerRadio" value="kommuneLayer" checked="true">
+    <input type="radio" id="kommuneLayer" name="layerRadio" value="kommuneLayer">
     <label for="kommuneLayer">Kommuner</label>
   </div>
-  <script src="js/norgeskart.js"></script>
+  <script src="js/fylkerkommuner.js"></script>
 </body>
 </html>
