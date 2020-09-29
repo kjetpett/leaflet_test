@@ -12,7 +12,7 @@ var kommuneFylkeStil = {
 
 fylkeLayer = L.esri.featureLayer({
   url: 'https://services1.arcgis.com/ThExf1r1eIhz35uv/arcgis/rest/services/Fylker_3857/FeatureServer/0',
-  // OnPrem server url: 'https://trdetestarcgi01.miljodirektoratet.no/arcgis/rest/services/interne_tjenester/kommuner_fylker_3857/MapServer/1',
+  // On-prem server url: 'https://trdetestarcgi01.miljodirektoratet.no/arcgis/rest/services/interne_tjenester/kommuner_fylker_3857/MapServer/1',
   simplifyFactor: 0.35,
   fields: ['OBJECTID', 'fylkeNavn'],
   style: kommuneFylkeStil
@@ -50,7 +50,7 @@ fylkeLayer.on('mouseover', function (e) {
 
 kommuneLayer = L.esri.featureLayer({
   url: 'https://services1.arcgis.com/ThExf1r1eIhz35uv/arcgis/rest/services/Kommuner_3857/FeatureServer/0',
-  // OnPrem server url: 'https://trdetestarcgi01.miljodirektoratet.no/arcgis/rest/services/interne_tjenester/kommuner_fylker/MapServer/0',
+  // On-prem server url: 'https://trdetestarcgi01.miljodirektoratet.no/arcgis/rest/services/interne_tjenester/kommuner_fylker/MapServer/0',
   simplifyFactor: 0.35,
   fields: ['OBJECTID', 'kommNavn'],
   style: kommuneFylkeStil
