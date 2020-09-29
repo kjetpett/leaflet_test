@@ -1,10 +1,11 @@
 var map = L.map('map').setView([66, 17], 5);
 var oldId, selectedFeature;
-var layerGroup = L.layerGroup().addTo(map);
 
+map.createPane('bakgrunnskart');
 var norgeLayer = L.esri.featureLayer({
     url: 'https://services1.arcgis.com/ThExf1r1eIhz35uv/arcgis/rest/services/Norge_3857/FeatureServer/0',
     // OnPrem server url: 'https://trdetestarcgi01.miljodirektoratet.no/arcgis/rest/services/interne_tjenester/kommuner_fylker_3857/MapServer/2',
+    pane: 'bakgrunnskart',
     simplifyFactor: 0.35,
     fields: ['OBJECTID', 'Land'],
     style: {
@@ -14,10 +15,12 @@ var norgeLayer = L.esri.featureLayer({
         fillColor: '#FFFFFF',
         fillOpacity: 1.0
     }
-}).addTo(layerGroup);
+}).addTo(map);
 
+map.createPane('verneomrade'); //pane bestemmer tegnerekkefølgen
 var verneomradeLayer = L.esri.featureLayer({
     url: 'https://kart.miljodirektoratet.no/arcgis/rest/services/vern/MapServer/0',
+    pane: 'verneomrade',
     simplifyFactor: 0.35,
     fields: ['OBJECTID', 'navn', 'verneform', 'offisieltNavn', 'naturvernId'],
     style: function (feature) {
@@ -32,12 +35,13 @@ var verneomradeLayer = L.esri.featureLayer({
             return {
                 fillColor: '#45B0B0',
                 color: '#4A7F7F',
-                fillOpacity: 1, weight: 1
+                fillOpacity: 1, 
+                weight: 1
             };
         }
     },
     where: "verneform = 'Nasjonalpark'"
-}).addTo(layerGroup);
+}).addTo(map);
 
 verneomradeLayer.on('mouseout', function (e) {
     if (e.layer.feature.id != selectedFeature) {
@@ -58,16 +62,33 @@ verneomradeLayer.on('mouseover', function (e) {
 
 verneomradeLayer.on('click', function (e) {
     verneomradeLayer.resetFeatureStyle(selectedFeature);
-    map.fitBounds(e.layer.getBounds()); //evt bruk flyToBounds
+    map.fitBounds(e.layer.getBounds().pad(2)); //evt bruk flyToBounds
     if (e.layer.feature.id != selectedFeature) {
+        p = e.layer.feature.properties;
+        
         verneomradeLayer.setFeatureStyle(e.layer.feature.id, {
             fillColor: '#FFFF00'
-        });
-        selectedFeature = e.layer.feature.id;
-        p = e.layer.feature.properties;
+        });        
+        
         document.getElementById('details-pane').innerHTML = 
-            '<b>' + p.offisieltNavn + '</b><br>' +
-            'https://faktaark.naturbase.no?id=' + p.naturvernId;
+            '<b>' + p.offisieltNavn + '</b><br><br>' + '<a href = "https://faktaark.naturbase.no?id=' + p.naturvernId + '" target="_blank">Faktaark</a><br>';
+
+        var find = L.esri.find({
+            url: 'http://arcgis03.miljodirektoratet.no/arcgis/rest/services/faktaark/vern/MapServer',
+        });
+        find.layers('0').text(p.naturvernId).fields('naturvernId').returnGeometry(false);
+        find.run(function (err, featureColl, response) {
+            if (err) {
+                console.log(err);
+                return;
+            }
+            if (featureColl.features[0].properties.Generelt.toLowerCase() != 'null') {
+                document.getElementById('details-pane').innerHTML += featureColl.features[0].properties.Generelt.substring(0,500) + '...';
+            }
+        });
+
+        selectedFeature = e.layer.feature.id;
+        
     } else {
         verneomradeLayer.resetFeatureStyle(selectedFeature);
         selectedFeature = null;
