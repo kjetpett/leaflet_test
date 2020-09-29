@@ -64,7 +64,7 @@ kommuneLayer.on('mouseout', function (e) {
 
 kommuneLayer.on('click', function (e) {
   kommuneLayer.resetFeatureStyle(selectedFeature);
-  map.fitBounds(e.layer.getBounds());
+  map.fitBounds(e.layer.getBounds().pad(2));
   if (e.layer.feature.id != selectedFeature) {
     kommuneLayer.setFeatureStyle(e.layer.feature.id, {
       fillColor: '#FFFF00'
