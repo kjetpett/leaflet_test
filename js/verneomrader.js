@@ -74,7 +74,7 @@ verneomradeLayer.on('click', function (e) {
             '<b>' + p.offisieltNavn + '</b><br><br>' + '<a href = "https://faktaark.naturbase.no?id=' + p.naturvernId + '" target="_blank">Faktaark</a><br>';
 
         var find = L.esri.find({
-            url: 'http://arcgis03.miljodirektoratet.no/arcgis/rest/services/faktaark/vern/MapServer',
+            url: 'https://arcgis03.miljodirektoratet.no/arcgis/rest/services/faktaark/vern/MapServer',
         });
         find.layers('0').text(p.naturvernId).fields('naturvernId').returnGeometry(false);
         find.run(function (err, featureColl, response) {
