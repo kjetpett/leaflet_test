@@ -1,7 +1,7 @@
 var map = L.map('map').setView([63, 11], 9);
 var basisLayerURL = 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheBasis/MapServer';
 var geomapPostLayerURL = 'https://services.geodataonline.no/arcgis/rest/services/Geomap_UTM33_EUREF89/GeomapPost/FeatureServer/6';
-var token = 'kOEi8NRpauNEckcTlzOkpI05jJaIX0ormv8OsY_l2wSxPEb01WYNhVZRYucyXkn2'; // Lag din egen token på https://services.geodataonline.no/arcgis/tokens/ (request ip)
+var token = 'kOEi8NRpauNEckcTlzOkpK4KhXvfpXhDMmi9mxnLm3RMTJ7418USeUDAb_cgldVu'; // Lag din egen token på https://services.geodataonline.no/arcgis/tokens/ (request ip)
 var selectedFeature, oldId;
 
 basisLayer = L.esri.tiledMapLayer({
