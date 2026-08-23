@@ -1,4 +1,4 @@
-var map = L.map('map').setView([63.4305, 10.3951], 13);
+var map = L.map('map', { tap: false }).setView([63.4305, 10.3951], 13);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
@@ -43,9 +43,18 @@ trondheimPoints.forEach(function (latlng, index) {
     className: 'point-icon-frame'
   });
 
-  L.marker(latlng, { icon: icon })
+  var marker = L.marker(latlng, {
+    icon: icon,
+    zIndexOffset: 1000,
+    riseOnHover: true
+  })
     .bindPopup('Point ' + (index + 1) + '<br>' + iconFiles[index])
     .addTo(pointLayer);
+
+  marker.on('click touchstart', function (e) {
+    L.DomEvent.stopPropagation(e);
+    marker.openPopup();
+  });
 });
 
 var lineLayer = L.polyline(trondheimPoints, {
