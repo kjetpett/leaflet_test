@@ -52,7 +52,8 @@ var lineLayer = L.polyline(trondheimPoints, {
   color: '#D32F2F',
   weight: 4,
   opacity: 0.9,
-  lineJoin: 'round'
+  lineJoin: 'round',
+  interactive: false
 }).addTo(map);
 
 map.fitBounds(lineLayer.getBounds().pad(0.2));
