@@ -1,0 +1,38 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start local web server",
+            "type": "shell",
+            "command": "python3",
+            "args": [
+                "-m",
+                "http.server",
+                "5500"
+            ],
+            "isBackground": true,
+            "problemMatcher": [
+                {
+                    "pattern": {
+                        "regexp": ".*"
+                    },
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": ".*",
+                        "endsPattern": "Serving HTTP on .* port 5500.*"
+                    }
+                }
+            ]
+        },
+        {
+            "label": "Stop local web server",
+            "type": "shell",
+            "command": "sh",
+            "args": [
+                "-c",
+                "lsof -ti tcp:5500 | xargs -r kill"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
