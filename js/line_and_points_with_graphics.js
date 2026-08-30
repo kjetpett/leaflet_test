@@ -30,8 +30,8 @@ Promise.all([
     var icon = L.icon({
       iconUrl: props.ikon_url,
       iconSize: [42, 42],
-      iconAnchor: [21, 42],
-      popupAnchor: [0, -36],
+      iconAnchor: [21, 21],
+      popupAnchor: [0, -21],
       className: 'point-icon-frame'
     });
 
