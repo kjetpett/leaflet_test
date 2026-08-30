@@ -3,10 +3,10 @@
 "name": "punkt",
 "crs": { "type": "name", "properties": { "name": "urn:ogc:def:crs:EPSG::25833" } },
 "features": [
-{ "type": "Feature", "properties": { "beskrivelse": "Ender", "ikon_url": "https://lamokart.blob.core.windows.net/ikoner/Edvard_og_Embla_Ender.svg" }, "geometry": { "type": "Point", "coordinates": [ 271908.208462661947124, 7042497.226743653416634 ] } },
-{ "type": "Feature", "properties": { "beskrivelse": "Ekorn", "ikon_url": "https://lamokart.blob.core.windows.net/ikoner/Ella_Ekorn.svg" }, "geometry": { "type": "Point", "coordinates": [ 272175.612576966057532, 7042615.847757776267827 ] } },
-{ "type": "Feature", "properties": { "beskrivelse": "Hane", "ikon_url": "https://lamokart.blob.core.windows.net/ikoner/Harald_Hane.svg" }, "geometry": { "type": "Point", "coordinates": [ 271742.265837551793084, 7042388.514565869234502 ] } },
-{ "type": "Feature", "properties": { "beskrivelse": "Kråke", "ikon_url": "https://lamokart.blob.core.windows.net/ikoner/Kora_Krake.svg" }, "geometry": { "type": "Point", "coordinates": [ 271611.559177521499805, 7042477.140860977582633 ] } },
-{ "type": "Feature", "properties": { "beskrivelse": "Måse", "ikon_url": "https://lamokart.blob.core.windows.net/ikoner/Maja_Maase.svg" }, "geometry": { "type": "Point", "coordinates": [ 271589.77174426370766, 7042223.912687296979129 ] } }
+{ "type": "Feature", "properties": { "popup_kort": "Ender", "ikon_url": "https://lamokart.blob.core.windows.net/ikoner/Edvard_og_Embla_Ender.svg", "popup_lang": "Donald og Dolly Duck", "type": "strandrydd_2026" }, "geometry": { "type": "Point", "coordinates": [ 271908.208462661947124, 7042497.226743653416634 ] } },
+{ "type": "Feature", "properties": { "popup_kort": "Ekorn", "ikon_url": "https://lamokart.blob.core.windows.net/ikoner/Ella_Ekorn.svg", "popup_lang": "Ella ekorn bor her", "type": "strandrydd_2026" }, "geometry": { "type": "Point", "coordinates": [ 272175.612576966057532, 7042615.847757776267827 ] } },
+{ "type": "Feature", "properties": { "popup_kort": "Hane", "ikon_url": "https://lamokart.blob.core.windows.net/ikoner/Harald_Hane.svg", "popup_lang": "Harald Hane er tidlig oppe.", "type": "strandrydd_2026" }, "geometry": { "type": "Point", "coordinates": [ 271742.265837551793084, 7042388.514565869234502 ] } },
+{ "type": "Feature", "properties": { "popup_kort": "Kråke", "ikon_url": "https://lamokart.blob.core.windows.net/ikoner/Kora_Krake.svg", "popup_lang": "Kora koser seg i treet sitt", "type": "strandrydd_2026" }, "geometry": { "type": "Point", "coordinates": [ 271611.559177521499805, 7042477.140860977582633 ] } },
+{ "type": "Feature", "properties": { "popup_kort": "Måse", "ikon_url": "https://lamokart.blob.core.windows.net/ikoner/Maja_Maase.svg", "popup_lang": "Maja driter overalt", "type": "strandrydd_2026" }, "geometry": { "type": "Point", "coordinates": [ 271589.77174426370766, 7042223.912687296979129 ] } }
 ]
 }
