@@ -5,64 +5,63 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '&copy; OpenStreetMap contributors'
 }).addTo(map);
 
-// 10 points distributed around Trondheim city center.
-var trondheimPoints = [
-  [63.4305, 10.3951],
-  [63.4324, 10.3872],
-  [63.4363, 10.4021],
-  [63.4386, 10.4108],
-  [63.4269, 10.4150],
-  [63.4208, 10.4071],
-  [63.4187, 10.3962],
-  [63.4229, 10.3848],
-  [63.4293, 10.3792],
-  [63.4349, 10.3898]
-];
+// Source data is in EPSG:25833 (ETRS89 / UTM zone 33N), Leaflet needs WGS84.
+proj4.defs('EPSG:25833', '+proj=utm +zone=33 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs');
 
-var iconFiles = [
-  'Den_fireoyde_katten_fra_uffa.png',
-  'Edvard_og_Embla_Ender.png',
-  'Ella_Ekorn.png',
-  'Harald_Hane.png',
-  'Kora_Krake.png',
-  'Maja_Maase.png',
-  'Palle_Panda.png',
-  'Rasmus_Rev.png',
-  'Sofie_Svartlamoen-katt.png',
-  'Ulva_og_Ulrian_Ulv.png'
-];
+function toLatLng(coord) {
+  var wgs84 = proj4('EPSG:25833', 'EPSG:4326', coord);
+  return [wgs84[1], wgs84[0]];
+}
 
 var pointLayer = L.layerGroup().addTo(map);
+var lineLayer = L.layerGroup().addTo(map);
 
-trondheimPoints.forEach(function (latlng, index) {
-  var icon = L.icon({
-    iconUrl: 'graphics/' + iconFiles[index],
-    iconSize: [42, 42],
-    iconAnchor: [21, 42],
-    popupAnchor: [0, -36],
-    className: 'point-icon-frame'
+Promise.all([
+  fetch('geojson/punkt.geojson').then(function (res) { return res.json(); }),
+  fetch('geojson/linje.geojson').then(function (res) { return res.json(); })
+]).then(function (results) {
+  var punktData = results[0];
+  var linjeData = results[1];
+
+  punktData.features.forEach(function (feature) {
+    var latlng = toLatLng(feature.geometry.coordinates);
+    var props = feature.properties;
+
+    var icon = L.icon({
+      iconUrl: props.ikon_url,
+      iconSize: [42, 42],
+      iconAnchor: [21, 42],
+      popupAnchor: [0, -36],
+      className: 'point-icon-frame'
+    });
+
+    var marker = L.marker(latlng, {
+      icon: icon,
+      zIndexOffset: 1000,
+      riseOnHover: true
+    })
+      .bindPopup(props.beskrivelse || '')
+      .addTo(pointLayer);
+
+    marker.on('click touchstart', function (e) {
+      L.DomEvent.stopPropagation(e);
+      marker.openPopup();
+    });
   });
 
-  var marker = L.marker(latlng, {
-    icon: icon,
-    zIndexOffset: 1000,
-    riseOnHover: true
-  })
-    .bindPopup('Point ' + (index + 1) + '<br>' + iconFiles[index])
-    .addTo(pointLayer);
-
-  marker.on('click touchstart', function (e) {
-    L.DomEvent.stopPropagation(e);
-    marker.openPopup();
+  linjeData.features.forEach(function (feature) {
+    var latlngs = feature.geometry.coordinates.map(toLatLng);
+    L.polyline(latlngs, {
+      color: '#D32F2F',
+      weight: 4,
+      opacity: 0.9,
+      lineJoin: 'round',
+      interactive: false
+    }).addTo(lineLayer);
   });
+
+  var bounds = L.featureGroup([pointLayer, lineLayer]).getBounds();
+  if (bounds.isValid()) {
+    map.fitBounds(bounds.pad(0.2));
+  }
 });
-
-var lineLayer = L.polyline(trondheimPoints, {
-  color: '#D32F2F',
-  weight: 4,
-  opacity: 0.9,
-  lineJoin: 'round',
-  interactive: false
-}).addTo(map);
-
-map.fitBounds(lineLayer.getBounds().pad(0.2));

@@ -18,6 +18,9 @@
     integrity="sha512-ucw7Grpc+iEQZa711gcjgMBnmd9qju1CICsRaryvX7HJklK0pGl/prxKvtHwpgm5ZHdvAil7YPxI1oWPOWK3UQ=="
     crossorigin=""></script>
 
+  <!-- Load proj4js from CDN to reproject EPSG:25833 coordinates to WGS84 -->
+  <script src="https://unpkg.com/proj4@2.9.0/dist/proj4.js"></script>
+
   <style>
     body {
       margin: 0;
@@ -55,8 +58,7 @@
   <div id="map"></div>
   <div id="info-pane" class="leaflet-bar">
     <b>Line and Points</b><br>
-    10 points around Trondheim sentrum.<br>
-    The red line uses the same coordinates as vertices.
+    Points and line loaded from geojson/punkt.geojson and geojson/linje.geojson.
   </div>
   <script src="js/line_and_points_with_graphics.js"></script>
 </body>
