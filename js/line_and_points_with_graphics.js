@@ -2,14 +2,14 @@ var map = L.map('map', { tap: false }).setView([63.4305, 10.3951], 13);
 
 var vectorKartLayer = L.esri.Vector.vectorTileLayer(
   'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer'
-).addTo(map);
+);
 
 var geocacheBilderLayer = L.esri.tiledMapLayer({
   url: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheBilder/MapServer',
   maxZoom: 19
-});
+}).addTo(map);
 
-var activeBackgroundLayer = vectorKartLayer;
+var activeBackgroundLayer = geocacheBilderLayer;
 
 var backgroundToggleControl = L.control({ position: 'topright' });
 backgroundToggleControl.onAdd = function () {
