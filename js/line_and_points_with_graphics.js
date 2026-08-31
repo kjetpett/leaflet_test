@@ -120,7 +120,7 @@ Promise.all([
       className: 'point-icon-frame'
     });
 
-    var marker = L.marker(latlng, {
+    L.marker(latlng, {
       icon: icon,
       zIndexOffset: 1000,
       riseOnHover: true
