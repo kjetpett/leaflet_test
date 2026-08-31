@@ -1,4 +1,4 @@
-var map = L.map('map', { tap: false }).setView([63.4305, 10.3951], 13);
+var map = L.map('map', { tap: false, zoomSnap: 0.5 }).setView([63.4305, 10.3951], 13);
 
 var vectorKartLayer = L.esri.Vector.vectorTileLayer(
   'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer'
@@ -187,6 +187,14 @@ Promise.all([
 
   var bounds = L.featureGroup(activeLayers).getBounds();
   if (bounds.isValid()) {
-    map.fitBounds(bounds.pad(0.2));
+    var onlyOmraadeVisible = map.hasLayer(omraadeLayer) &&
+      !map.hasLayer(pointLayer) && !map.hasLayer(lineLayer);
+    if (onlyOmraadeVisible) {
+      var omraadeBounds = bounds.pad(0.05);
+      var omraadeZoom = map.getBoundsZoom(omraadeBounds) + 0.5;
+      map.setView(omraadeBounds.getCenter(), omraadeZoom);
+    } else {
+      map.fitBounds(bounds.pad(0.2));
+    }
   }
 });
