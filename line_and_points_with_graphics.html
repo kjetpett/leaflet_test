@@ -18,6 +18,11 @@
     integrity="sha512-ucw7Grpc+iEQZa711gcjgMBnmd9qju1CICsRaryvX7HJklK0pGl/prxKvtHwpgm5ZHdvAil7YPxI1oWPOWK3UQ=="
     crossorigin=""></script>
 
+  <!-- Load MapLibre GL and Esri Leaflet Vector for rendering the vector tile basemap -->
+  <link rel="stylesheet" href="https://unpkg.com/maplibre-gl@3/dist/maplibre-gl.css" />
+  <script src="https://unpkg.com/maplibre-gl@3/dist/maplibre-gl.js"></script>
+  <script src="https://unpkg.com/esri-leaflet-vector@4/dist/esri-leaflet-vector.js"></script>
+
   <!-- Load proj4js from CDN to reproject EPSG:25833 coordinates to WGS84 -->
   <script src="https://unpkg.com/proj4@2.9.0/dist/proj4.js"></script>
 
@@ -44,7 +49,7 @@
     }
 
     .leaflet-popup-content-wrapper {
-      padding: 1;
+      padding: 2;
     }
 
     .leaflet-popup-content {
@@ -68,9 +73,16 @@
     .background-toggle-button {
       background: white;
       border: 2px solid rgba(0, 0, 0, 0.2);
-      padding: 6px 10px;
-      font-size: 13px;
+      padding: 0;
+      width: 64px;
+      height: 64px;
       cursor: pointer;
+    }
+
+    .background-toggle-button img {
+      width: 100%;
+      height: 100%;
+      display: block;
     }
   </style>
 </head>

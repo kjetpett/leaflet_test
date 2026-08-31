@@ -1,31 +1,43 @@
 var map = L.map('map', { tap: false }).setView([63.4305, 10.3951], 13);
 
-var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '&copy; OpenStreetMap contributors'
-}).addTo(map);
+var vectorKartLayer = L.esri.Vector.vectorTileLayer(
+  'https://services.geodataonline.no/arcgis/rest/services/GeocacheVector/GeocacheBasis_WM/VectorTileServer'
+).addTo(map);
 
 var geocacheBilderLayer = L.esri.tiledMapLayer({
   url: 'https://services.geodataonline.no/arcgis/rest/services/Geocache_WMAS_WGS84/GeocacheBilder/MapServer',
   maxZoom: 19
 });
 
-var activeBackgroundLayer = osmLayer;
+var activeBackgroundLayer = vectorKartLayer;
 
 var backgroundToggleControl = L.control({ position: 'topright' });
 backgroundToggleControl.onAdd = function () {
   var button = L.DomUtil.create('button', 'leaflet-bar background-toggle-button');
   button.type = 'button';
-  button.title = 'Bytt bakgrunnskart';
-  button.innerText = 'Bytt bakgrunnskart';
+
+  var icon = L.DomUtil.create('img', '', button);
+
+  function updateButton() {
+    // The icon shows the basemap you switch to, not the one currently shown.
+    if (activeBackgroundLayer === vectorKartLayer) {
+      button.title = 'Vis flyfoto';
+      icon.src = 'graphics/basemap_bilder.png';
+    } else {
+      button.title = 'Vis kart';
+      icon.src = 'graphics/basemap_kart.png';
+    }
+  }
 
   L.DomEvent.disableClickPropagation(button);
   L.DomEvent.on(button, 'click', function () {
     map.removeLayer(activeBackgroundLayer);
-    activeBackgroundLayer = activeBackgroundLayer === osmLayer ? geocacheBilderLayer : osmLayer;
+    activeBackgroundLayer = activeBackgroundLayer === vectorKartLayer ? geocacheBilderLayer : vectorKartLayer;
     activeBackgroundLayer.addTo(map);
+    updateButton();
   });
 
+  updateButton();
   return button;
 };
 backgroundToggleControl.addTo(map);
