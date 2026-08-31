@@ -138,7 +138,7 @@ Promise.all([
     var latlngs = feature.geometry.coordinates.map(toLatLng);
     L.polyline(latlngs, {
       color: '#e92020',
-      weight: 3,
+      weight: 4,
       dashArray: '5, 5',
       opacity: 0.9,
       lineJoin: 'round',
@@ -162,7 +162,7 @@ Promise.all([
       .bindPopup(buildPopupContent(props))
       .addTo(omraadeLayer);
 
-    if (props.gruppe) {
+    if (props.gruppe && map.hasLayer(omraadeLayer)) {
       L.marker(polygon.getCenter(), {
         icon: L.divIcon({
           className: 'omraade-label',
@@ -174,10 +174,18 @@ Promise.all([
     }
   });
 
-  var allLayers = pointLayer.getLayers()
-    .concat(lineLayer.getLayers())
-    .concat(omraadeLayer.getLayers());
-  var bounds = L.featureGroup(allLayers).getBounds();
+  var activeLayers = [];
+  if (map.hasLayer(pointLayer)) {
+    activeLayers = activeLayers.concat(pointLayer.getLayers());
+  }
+  if (map.hasLayer(lineLayer)) {
+    activeLayers = activeLayers.concat(lineLayer.getLayers());
+  }
+  if (map.hasLayer(omraadeLayer)) {
+    activeLayers = activeLayers.concat(omraadeLayer.getLayers());
+  }
+
+  var bounds = L.featureGroup(activeLayers).getBounds();
   if (bounds.isValid()) {
     map.fitBounds(bounds.pad(0.2));
   }
